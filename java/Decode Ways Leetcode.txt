@@ -1,0 +1,45 @@
+A message containing letters from A-Z can be encoded into numbers using the following mapping:
+
+'A' -> "1"
+'B' -> "2"
+...
+'Z' -> "26"
+To decode an encoded message, all the digits must be grouped then mapped back into letters using the reverse of the mapping above (there may be multiple ways). For example, "11106" can be mapped into:
+
+"AAJF" with the grouping (1 1 10 6)
+"KJF" with the grouping (11 10 6)
+Note that the grouping (1 11 06) is invalid because "06" cannot be mapped into 'F' since "6" is different from "06".
+
+Given a string s containing only digits, return the number of ways to decode it.
+
+The answer is guaranteed to fit in a 32-bit integer.
+
+Solution:
+
+class Solution {
+    public int numDecodings(String s) {
+        int[] mem = new int[s.length()+1];
+        Arrays.fill(mem,-1);
+        return dp(0,s,mem);
+    }
+    
+    public int dp(int i,String s,int[] mem)
+    {
+        if(i == s.length())return 1;
+        if(i > s.length())return 0;
+        if(mem[i] != -1)return mem[i];
+        
+        int include_one = 0,include_two = 0;
+        if(s.charAt(i) != '0') include_one = dp(i+1,s,mem);
+        if((check(i,s))) include_two = dp(i+2,s,mem);
+         
+        return mem[i] = include_one + include_two;
+    }
+           
+     boolean check(int i,String s)
+     {
+       if( i+1 >= s.length() || s.charAt(i) == '0' || (s.charAt(i) != '1' && s.charAt(i) != '2'))return false;
+       if(s.charAt(i) == '2' && (s.charAt(i+1) == '7' || s.charAt(i+1) == '8' || s.charAt(i+1) == '9'))return false;
+       return true;
+     }
+}
